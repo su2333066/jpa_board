@@ -34,7 +34,7 @@ public class UserApi {
             joinResponse.setMsg("validateError");
         }else{
             if (userService.join(dto)) {
-                joinResponse.setMsg("success!!");
+                joinResponse.setMsg("success");
             } else {
                 joinResponse.setMsg("duplicateError");
             }
