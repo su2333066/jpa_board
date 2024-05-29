@@ -5,7 +5,6 @@ import com.board.service.UserService;
 import jakarta.validation.Valid;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +17,7 @@ public class UserApi {
     private final UserService userService;
 
     /* 회원가입 */
-    @PostMapping("/join")
+    @PostMapping("/auth/join")
     public JoinResponse join(@RequestBody @Valid UserDto.Request dto, Errors errors) {
 
         JoinResponse joinResponse = new JoinResponse();
@@ -31,16 +30,23 @@ public class UserApi {
             Map<String, String> validatorResult = userService.validateHandling(errors);
             joinResponse.setValidatorResult(validatorResult);
 
-            joinResponse.setMsg("validateError");
-        }else{
-            if (userService.join(dto)) {
-                joinResponse.setMsg("success");
-            } else {
-                joinResponse.setMsg("duplicateError");
-            }
+            joinResponse.setMsg("fail");
+            return joinResponse;
         }
 
+        userService.join(dto);
+        joinResponse.setMsg("success");
         return joinResponse;
+    }
+
+    @GetMapping("/auth/join/username/{username}")
+    public boolean checkUsernameDuplicate(@PathVariable("username") String username){
+        return userService.checkUsernameDuplication(username);
+    }
+
+    @GetMapping("/auth/join/nickname/{nickname}")
+    public boolean checkNicknameDuplicate(@PathVariable("nickname") String nickname){
+        return userService.checkNicknameDuplication(nickname);
     }
 
     @Data

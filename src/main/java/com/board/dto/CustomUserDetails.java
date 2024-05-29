@@ -1,9 +1,7 @@
 package com.board.dto;
 
-import com.board.domain.Role;
 import com.board.domain.User;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

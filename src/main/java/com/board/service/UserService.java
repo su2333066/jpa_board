@@ -1,6 +1,5 @@
 package com.board.service;
 
-import com.board.domain.User;
 import com.board.dto.UserDto;
 import com.board.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,27 +21,27 @@ public class UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Transactional
-    public boolean join(UserDto.Request dto) {
-
-        String username = dto.getUsername();
-        String password = dto.getPassword();
-
-        boolean isExist = userRepository.existsByUsername(username);
-
-        if (isExist) {
-            return false;
-        }
-
-        dto.setPassword(bCryptPasswordEncoder.encode(password));
+    public void join(UserDto.Request dto) {
+        dto.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
         userRepository.save(dto.toEntity());
-        return true;
     }
 
-    /* 회원가입 시, 유효성 검사 및 중복 체크 */
+    public boolean checkUsernameDuplication(String username) {
+        boolean usernameDuplicate = userRepository.existsByUsername(username);
+        return usernameDuplicate;
+    }
+
+    public boolean checkNicknameDuplication(String nickname) {
+        boolean nicknameDuplicate = userRepository.existsByNickname(nickname);
+        return nicknameDuplicate;
+    }
+
+
+    /* 회원가입 시, 유효성 검사 */
     public Map<String, String> validateHandling(Errors errors) {
         Map<String, String> validatorResult = new HashMap<>();
 
-        /* 유효성 검사, 중복 검사에 실패한 필드 목록을 받음 */
+        /* 유효성 검사에 실패한 필드 목록을 받음 */
         for (FieldError error : errors.getFieldErrors()) {
             String validKeyName = String.format("valid_%s", error.getField());
             validatorResult.put(validKeyName, error.getDefaultMessage());

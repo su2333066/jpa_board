@@ -23,6 +23,9 @@ public class User extends BaseTime {
     @Column(nullable = false, length = 30, unique = true)
     private String username; // 아이디
 
+    @Column(nullable = false, unique = true)
+    private String nickname;
+
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -34,4 +37,12 @@ public class User extends BaseTime {
 
     @OneToMany(mappedBy = "comment")
     private List<Comment> comments;
+
+    /**
+     * 회원 수정
+     */
+    public void modify(String nickname, String password) {
+        this.nickname = nickname;
+        this.password = password;
+    }
 }

@@ -2,7 +2,6 @@ package com.board.dto;
 
 import com.board.domain.Role;
 import com.board.domain.User;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
@@ -20,11 +19,14 @@ public class UserDto {
 
         private Long id;
 
-        @Pattern(regexp = "^[a-z0-9-_]{8,20}$", message = "아이디는 영문 대문자, 한글, 특수문자를 제외한 8~20자를 입력하세요.")
+        @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-z0-9-_]{4,20}$", message = "아이디는 특수문자를 제외한 4~20자리여야 합니다.")
         private String username;
 
-        @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,16}$", message = "비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요.")
+        @Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,16}", message = "비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요.")
         private String password;
+
+        @Pattern(regexp = "^[가-힣a-zA-Z0-9]{2,10}$" , message = "닉네임은 특수문자를 포함하지 않은 2~10자리여야 합니다.")
+        private String nickname;
 
         private Role role;
 
@@ -34,6 +36,7 @@ public class UserDto {
                     .id(id)
                     .username(username)
                     .password(password)
+                    .nickname(nickname)
                     .role(Role.ROLE_USER)
                     .build();
             return user;
