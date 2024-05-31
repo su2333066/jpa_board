@@ -28,9 +28,8 @@ public class User extends BaseTime {
 
     private String password;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role;
+    private String role;
 
     @OneToMany(mappedBy = "user")
     private List<Board> boards;

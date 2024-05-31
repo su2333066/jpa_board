@@ -1,6 +1,5 @@
 package com.board.dto;
 
-import com.board.domain.Role;
 import com.board.domain.User;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
@@ -22,13 +21,13 @@ public class UserDto {
         @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-z0-9-_]{4,20}$", message = "아이디는 특수문자를 제외한 4~20자리여야 합니다.")
         private String username;
 
-        @Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,16}", message = "비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요.")
+        @Pattern(regexp = "^.*(?=.{8,17})(?=.*[0-9])(?=.*[a-zA-Z]).*$", message = "비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요.")
         private String password;
 
         @Pattern(regexp = "^[가-힣a-zA-Z0-9]{2,10}$" , message = "닉네임은 특수문자를 포함하지 않은 2~10자리여야 합니다.")
         private String nickname;
 
-        private Role role;
+        private String role;
 
         /* DTO -> Entity */
         public User toEntity() {
@@ -37,7 +36,7 @@ public class UserDto {
                     .username(username)
                     .password(password)
                     .nickname(nickname)
-                    .role(Role.ROLE_USER)
+                    .role("ROLE_USER")
                     .build();
             return user;
         }
@@ -55,7 +54,7 @@ public class UserDto {
 
         private final Long id;
         private final String username;
-        private final Role role;
+        private final String role;
         private final String modifiedDate;
 
         /* Entity -> dto */
