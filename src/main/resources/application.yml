@@ -12,7 +12,7 @@ spring:
          format_sql: true
 
 jwt:
-  secret: vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaaaaaaaaaaaaaaaabbbbb
+  secret: ;GaE3za?jrhkd/|rT9Y\$Gd\(^0qh)\D5^&?1W1k22p"-+L+wU<=\H;`8}a(CaCO
 
 logging:
   level:

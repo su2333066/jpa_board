@@ -1,5 +1,7 @@
 package com.board.jwt;
 
+import com.board.constants.SecurityConstants;
+import com.board.domain.Role;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -22,8 +24,8 @@ public class JWTUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("username", String.class);
     }
 
-    public String getRole(String token) {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("role", String.class);
+    public Role getRole(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("role", Role.class);
     }
 
     public Boolean isExpired(String token) {
@@ -32,11 +34,14 @@ public class JWTUtil {
 
     public String createJwt(String username, String role, Long expiredMs) {
         return Jwts.builder()
+                .header()
+                .add("type", SecurityConstants.TOKEN_HEADER)
+                .and()
+                .signWith(secretKey)
                 .claim("username", username)
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
-                .signWith(secretKey)
                 .compact();
     }
 }

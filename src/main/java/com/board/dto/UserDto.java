@@ -1,5 +1,6 @@
 package com.board.dto;
 
+import com.board.domain.Role;
 import com.board.domain.User;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
@@ -36,7 +37,7 @@ public class UserDto {
                     .username(username)
                     .password(password)
                     .nickname(nickname)
-                    .role("ROLE_USER")
+                    .role(Role.ROLE_USER)
                     .build();
             return user;
         }
@@ -54,7 +55,7 @@ public class UserDto {
 
         private final Long id;
         private final String username;
-        private final String role;
+        private final Role role;
         private final String modifiedDate;
 
         /* Entity -> dto */

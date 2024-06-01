@@ -39,7 +39,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
                 .cors((corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
@@ -61,33 +61,30 @@ public class SecurityConfig {
                     }
                 })));
 
+        // CSRF 공격 방어 기능 비활성화
         http
-                .csrf((auth) -> auth.disable());
+                .csrf((csrf) -> csrf.disable());
 
+        // 폼 기반 로그인 비활성화
         http
-                .formLogin((auth) -> auth.disable());
+                .formLogin((login) -> login.disable());
 
+        // HTTP 기본 인증 비활성화
         http
-                .httpBasic((auth) -> auth.disable());
+                .httpBasic((basic) -> basic.disable());
+
+        // 세션 관리 정책 설정
+        // 세션 인증을 사용하지 않고, JWT를 사용하여 인증하기 때문에, 세션 불필요
+        http
+                .sessionManagement((session) -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
 
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/", "/auth/**").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated());
-
-//        http
-//                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
-//
-//        http
-//                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
-
-        http
-                .sessionManagement((session) -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
-
-
 
         return http.build();
     }

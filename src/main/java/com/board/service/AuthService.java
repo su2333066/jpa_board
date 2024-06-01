@@ -1,11 +1,10 @@
 package com.board.service;
 
-import com.board.domain.User;
+import com.board.dto.AuthenticationRequest;
 import com.board.jwt.JWTUtil;
-import com.board.repository.UserRepository;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,32 +13,29 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final UserRepository userRepository;
     private final JWTUtil jwtUtil;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final CustomUserDetailsService userDetailsService;
+    private final CustomUserDetailsService customUserDetailsService;
 
-    public ResponseEntity<String> login(Map<String, String> user, HttpServletResponse response) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(user.get("username"));
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, user.get("password"), userDetails.getAuthorities());
+    public ResponseEntity<String> login(AuthenticationRequest request) {
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(request.getUsername());
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        User findUser = userRepository.findByUsername(user.get("username"))
-                .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 아이디입니다."));
-        if(!bCryptPasswordEncoder.matches(user.get("password"), findUser.getPassword())){
+        if(!bCryptPasswordEncoder.matches(request.getPassword(), userDetails.getPassword())){
             throw new IllegalArgumentException("비밀번호가 맞지 않습니다.");
         }
 
-        String jwtToken = jwtUtil.createJwt(findUser.getUsername(), findUser.getRole(), 3600L);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return ResponseEntity.ok(jwtToken);
+        String jwtToken = jwtUtil.createJwt(userDetails.getUsername(), userDetails.getAuthorities().toArray()[0].toString(), 3600L);
+
+        return new ResponseEntity<String>(jwtToken, HttpStatus.OK);
     }
 
 }

@@ -14,13 +14,13 @@ public class CustomUserDetails implements UserDetails {
     private final User user;
 
     @Override
-    public String getPassword() {
-        return user.getPassword();
+    public String getUsername() {
+        return user.getUsername();
     }
 
     @Override
-    public String getUsername() {
-        return user.getUsername();
+    public String getPassword() {
+        return user.getPassword();
     }
 
     /* 계정 만료 여부
@@ -64,7 +64,7 @@ public class CustomUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collectors = new ArrayList<>();
 
-        collectors.add(() -> user.getRole());
+        collectors.add(() -> String.valueOf(user.getRole()));
 
         return collectors;
     }

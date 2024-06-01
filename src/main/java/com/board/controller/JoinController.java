@@ -1,13 +1,10 @@
-package com.board.api;
+package com.board.controller;
 
 import com.board.dto.UserDto;
-import com.board.service.AuthService;
 import com.board.service.UserService;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,15 +13,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-public class UserApi {
+public class JoinController {
 
     private final UserService userService;
-    private final AuthService authService;
-
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody Map<String, String> user, HttpServletResponse response) {
-        return authService.login(user, response);
-    }
 
     @PostMapping("/join/check")
     public JoinResponse checkValidate(@RequestBody @Valid UserDto.Request dto, Errors errors) {
