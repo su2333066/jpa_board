@@ -24,18 +24,21 @@ public class AuthService {
     private final CustomUserDetailsService customUserDetailsService;
 
     public ResponseEntity<String> login(AuthenticationRequest request) {
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(request.getUsername());
+        try {
+            UserDetails userDetails = customUserDetailsService.loadUserByUsername(request.getUsername());
 
-        if(!bCryptPasswordEncoder.matches(request.getPassword(), userDetails.getPassword())){
-            throw new IllegalArgumentException("비밀번호가 맞지 않습니다.");
+            if (!bCryptPasswordEncoder.matches(request.getPassword(), userDetails.getPassword())) {
+                throw new IllegalArgumentException("비밀번호가 맞지 않습니다.");
+            }
+
+            Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            String jwtToken = jwtUtil.createJwt(userDetails.getUsername(), userDetails.getAuthorities().toArray()[0].toString(), 3600L);
+
+            return new ResponseEntity<String>(jwtToken, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        String jwtToken = jwtUtil.createJwt(userDetails.getUsername(), userDetails.getAuthorities().toArray()[0].toString(), 3600L);
-
-        return new ResponseEntity<String>(jwtToken, HttpStatus.OK);
     }
-
 }

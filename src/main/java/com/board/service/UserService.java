@@ -26,14 +26,16 @@ public class UserService {
         userRepository.save(dto.toEntity());
     }
 
-    public boolean checkUsernameDuplication(String username) {
-        boolean usernameDuplicate = userRepository.existsByUsername(username);
-        return usernameDuplicate;
+    public void checkUsernameDuplication(String username) {
+        if(userRepository.existsByUsername(username)){
+            throw new IllegalArgumentException("중복된 아이디입니다.");
+        }
     }
 
-    public boolean checkNicknameDuplication(String nickname) {
-        boolean nicknameDuplicate = userRepository.existsByNickname(nickname);
-        return nicknameDuplicate;
+    public void checkNicknameDuplication(String nickname) {
+        if (userRepository.existsByNickname(nickname)) {
+            throw new IllegalArgumentException("중복된 닉네임입니다.");
+        }
     }
 
 

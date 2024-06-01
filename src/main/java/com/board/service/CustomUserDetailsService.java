@@ -24,7 +24,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         if (!findUser.isPresent()) {
             // 존재하지 않으면
-            throw new IllegalArgumentException(username + " 사용자 없음");
+            throw new IllegalArgumentException("가입되지 않은 아이디입니다.");
         }else{
             // 존재하면 CustomUserDetails로 변환하여 전달
             User user = findUser.get();
