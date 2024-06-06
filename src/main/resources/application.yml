@@ -11,10 +11,9 @@ spring:
          show_sql: true
          format_sql: true
 
-jwt:
-  secret: ;GaE3za?jrhkd/|rT9Y\$Gd\(^0qh)\D5^&?1W1k22p"-+L+wU<=\H;`8}a(CaCO
-
 logging:
   level:
     org.hibernate.SQL: debug
-    org.hibernate.orm.jdbc.bind: trace
+
+jwt:
+  secret: ;GaE3za?jrhkd/|rT9Y\$Gd\(^0qh)\D5^&?1W1k22p"-+L+wU<=\H;`8}a(CaCO

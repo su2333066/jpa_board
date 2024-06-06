@@ -3,6 +3,7 @@ package com.board.dto;
 import com.board.domain.User;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
@@ -62,10 +63,8 @@ public class CustomUserDetails implements UserDetails {
     /* 유저의 권한 목록 */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> collectors = new ArrayList<>();
-
-        collectors.add(() -> String.valueOf(user.getRole()));
-
-        return collectors;
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().toString()));
+        return authorities;
     }
 }
