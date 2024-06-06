@@ -35,12 +35,11 @@ public class JWTUtil {
     public String createJwt(String username, String role, Long expiredMs) {
         return Jwts.builder()
                 .header()
-                .add("type", SecurityConstants.TOKEN_HEADER)
+                .add("typ", SecurityConstants.TOKEN_HEADER)
                 .and()
                 .signWith(secretKey)
-                .claim("username", username)
-                .claim("role", role)
-                .issuedAt(new Date(System.currentTimeMillis()))
+                .claim("uid", username)
+                .claim("rol", role)
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
                 .compact();
     }
